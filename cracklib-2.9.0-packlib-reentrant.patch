@@ -103,9 +103,9 @@ diff -up cracklib-2.9.0/lib/fascist.c.reentrant cracklib-2.9.0/lib/fascist.c
  	{
  	    continue;
  	}
-diff -up cracklib-2.9.0/lib/packer.h.reentrant cracklib-2.9.0/lib/packer.h
---- cracklib-2.9.0/lib/packer.h.reentrant	2013-08-21 15:29:24.245641356 +0200
-+++ cracklib-2.9.0/lib/packer.h		2013-08-21 15:29:24.247641399 +0200
+diff -up cracklib-2.9.0/lib/packer.h.in.reentrant cracklib-2.9.0/lib/packer.h.in
+--- cracklib-2.9.0/lib/packer.h.in.reentrant	2013-08-21 15:29:24.245641356 +0200
++++ cracklib-2.9.0/lib/packer.h.in	2013-08-21 15:29:24.247641399 +0200
 @@ -86,7 +86,7 @@ extern int PWClose(PWDICT *pwp);
  extern unsigned int FindPW(PWDICT *pwp, char *string);
  extern int PutPW(PWDICT *pwp, char *string);

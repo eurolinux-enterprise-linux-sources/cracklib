@@ -1,6 +1,6 @@
-diff -up cracklib-2.9.0/lib/packer.h.gztype cracklib-2.9.0/lib/packer.h
---- cracklib-2.9.0/lib/packer.h.gztype	2013-08-21 11:48:47.341631450 +0200
-+++ cracklib-2.9.0/lib/packer.h		2013-08-21 11:47:52.948471397 +0200
+diff -up cracklib-2.9.0/lib/packer.h.in.gztype cracklib-2.9.0/lib/packer.h.in
+--- cracklib-2.9.0/lib/packer.h.in.gztype	2013-08-21 11:48:47.341631450 +0200
++++ cracklib-2.9.0/lib/packer.h.in	2013-08-21 11:47:52.948471397 +0200
 @@ -44,7 +44,7 @@ struct pi_header
  typedef struct
  {

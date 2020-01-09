@@ -5,7 +5,7 @@
 Summary: A password-checking library
 Name: cracklib
 Version: 2.9.0
-Release: 11%{?dist}
+Release: 7%{?dist}
 Group: System Environment/Libraries
 Source0: http://prdownloads.sourceforge.net/cracklib/cracklib-%{version}.tar.gz
 
@@ -52,17 +52,16 @@ Source37: pass_file.gz
 # https://bugzilla.redhat.com/show_bug.cgi?id=557592
 # https://bugzilla.redhat.com/attachment.cgi?id=386022
 Source38: ry-threshold10.txt
-Patch1: cracklib-2.9.0-inttypes.patch
+Patch1: cracklib-2.8.15-inttypes.patch
 Patch2: cracklib-2.9.0-python-gzdicts.patch
 Patch3: cracklib-2.9.0-packlib-lookup.patch
 Patch4: cracklib-2.9.0-packlib-reentrant.patch
 Patch5: cracklib-2.9.0-packlib-gztype.patch
 Patch6: cracklib-2.9.0-simplistic.patch
-Patch7: cracklib-2.9.0-translation-updates.patch
 URL: http://sourceforge.net/projects/cracklib/
 License: LGPLv2+
 Buildroot: %{_tmppath}/%{name}-%{version}-root
-BuildRequires: python-devel, words, gettext
+BuildRequires: python-devel, words, autoconf, automake, gettext, libtool
 BuildRequires: gettext-autopoint
 BuildRequires: zlib-devel
 Conflicts: cracklib-dicts < 2.8
@@ -122,6 +121,7 @@ If you are installing CrackLib, you should also install cracklib-dicts.
 %prep
 %setup -q -a 2
 
+cp lib/packer.h lib/packer.h.in
 # Replace zn_CN.po with one that wasn't mis-transcoded at some point.
 grep '????????????????' po/zh_CN.po
 install -p -m 644 %{SOURCE3} po/zh_CN.po
@@ -132,8 +132,8 @@ install -p -m 644 %{SOURCE3} po/zh_CN.po
 %patch4 -p1 -b .reentrant
 %patch5 -p1 -b .gztype
 %patch6 -p1 -b .simplistic
-%patch7 -p2 -b .translations
 
+autoreconf -f -i
 mkdir cracklib-dicts
 for dict in %{SOURCE10} %{SOURCE11} %{SOURCE12} %{SOURCE13} %{SOURCE14} \
             %{SOURCE15} %{SOURCE16} %{SOURCE17} %{SOURCE18} %{SOURCE19} \
@@ -148,12 +148,13 @@ chmod +x util/cracklib-format
 
 %build
 %configure --with-pic --with-python --with-default-dict=%{dictpath} --disable-static
-make -C po update-gmo
+make -C po zh_CN.gmo
 make
 
 %install
 [ "$RPM_BUILD_ROOT" != "/" ] && rm -rf $RPM_BUILD_ROOT
-make install DESTDIR=$RPM_BUILD_ROOT 'pythondir=${pyexecdir}'
+make install DESTDIR=$RPM_BUILD_ROOT
+make install DESTDIR=$RPM_BUILD_ROOT INSTALL="install -c -p" -C python
 ./util/cracklib-format cracklib-dicts/* | \
 ./util/cracklib-packer $RPM_BUILD_ROOT/%{dictpath}
 ./util/cracklib-format $RPM_BUILD_ROOT/%{dictdir}/cracklib-small | \
@@ -255,21 +256,9 @@ EOF
 %files python
 %defattr(-,root,root)
 %{_libdir}/python*/site-packages/_cracklib*.so
-%{_libdir}/python*/site-packages/*.py*
+%{_libdir}/../lib/python*/site-packages/*.py*
 
 %changelog
-* Thu Feb  6 2014 Tomáš Mráz <tmraz@redhat.com> - 2.9.0-11
-- move python files to libdir
-
-* Fri Jan 24 2014 Daniel Mach <dmach@redhat.com> - 2.9.0-10
-- Mass rebuild 2014-01-24
-
-* Fri Dec 27 2013 Daniel Mach <dmach@redhat.com> - 2.9.0-9
-- Mass rebuild 2013-12-27
-
-* Tue Dec  3 2013 Tomáš Mráz <tmraz@redhat.com> - 2.9.0-8
-- updated translations
-
 * Thu Oct 31 2013 Tomáš Mráz <tmraz@redhat.com> - 2.9.0-7
 - do not remove any printable characters in cracklib-format
 

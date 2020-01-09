@@ -1,6 +1,6 @@
-diff -up cracklib-2.9.0/lib/packer.h.lookup cracklib-2.9.0/lib/packer.h
---- cracklib-2.9.0/lib/packer.h.lookup	2013-08-21 14:43:16.832990712 +0200
-+++ cracklib-2.9.0/lib/packer.h	2013-08-21 14:43:16.835990775 +0200
+diff -up cracklib-2.9.0/lib/packer.h.in.lookup cracklib-2.9.0/lib/packer.h.in
+--- cracklib-2.9.0/lib/packer.h.in.lookup	2013-08-21 14:43:16.832990712 +0200
++++ cracklib-2.9.0/lib/packer.h.in	2013-08-21 14:43:16.835990775 +0200
 @@ -60,6 +60,7 @@ typedef struct
      int count;
      char data_put[NUMWORDS][MAXWORDLEN];
