@@ -5,12 +5,15 @@
 Summary: A password-checking library
 Name: cracklib
 Version: 2.8.16
-Release: 2%{?dist}
+Release: 4%{?dist}
 Group: System Environment/Libraries
 Source0: http://prdownloads.sourceforge.net/cracklib/cracklib-%{version}.tar.gz
 
 # Retrieved at 20091201191719Z.
 Source1: http://iweb.dl.sourceforge.net/project/cracklib/cracklib-words/2008-05-07/cracklib-words-20080507.gz
+
+# For man pages.
+Source2: http://ftp.us.debian.org/debian/pool/main/c/cracklib2/cracklib2_2.8.18-1.debian.tar.gz
 
 Source10: http://ftp.cerias.purdue.edu/pub/dict/wordlists/computer/Domains.gz
 Source11: http://ftp.cerias.purdue.edu/pub/dict/wordlists/computer/Dosref.gz
@@ -49,6 +52,7 @@ Patch1: cracklib-2.8.15-inttypes.patch
 Patch2: cracklib-2.8.12-gettext.patch
 Patch3: cracklib-2.8.15-init.patch
 Patch4: cracklib-2.8.16-hi_update.patch
+Patch5: cracklib-2.8.16-zh_CN_update.patch
 URL: http://sourceforge.net/projects/cracklib/
 License: LGPLv2+
 Buildroot: %{_tmppath}/%{name}-%{version}-root
@@ -110,12 +114,13 @@ contains the utilities necessary for the creation of new dictionaries.
 If you are installing CrackLib, you should also install cracklib-dicts.
 
 %prep
-%setup -q
+%setup -q -a 2
 cp lib/packer.h lib/packer.h.in
 %patch1 -p1 -b .inttypes
 %patch2 -p1 -b .gettext
 %patch3 -p1 -b .init
 %patch4 -p1 -b .hi_update
+%patch5 -p1 -b .zh_CN_update
 autoreconf -f -i
 mkdir cracklib-dicts
 for dict in %{SOURCE10} %{SOURCE11} %{SOURCE12} %{SOURCE13} %{SOURCE14} \
@@ -132,6 +137,9 @@ chmod +x util/cracklib-format
 %build
 %configure --with-pic --with-python --with-default-dict=%{dictpath} --disable-static
 make
+pushd po
+make *.gmo
+popd
 
 %install
 [ "$RPM_BUILD_ROOT" != "/" ] && rm -rf $RPM_BUILD_ROOT
@@ -160,6 +168,10 @@ ln -s $toprelpath%{dictpath}.pwi $RPM_BUILD_ROOT/%{_libdir}/cracklib_dict.pwi
 fi
 rm -f $RPM_BUILD_ROOT/%{_libdir}/python*/site-packages/_cracklibmodule.*a
 rm -f $RPM_BUILD_ROOT/%{_libdir}/libcrack.la
+
+mkdir -p $RPM_BUILD_ROOT/%{_mandir}/man{3,8}
+install -p -m 644 debian/*.3 $RPM_BUILD_ROOT/%{_mandir}/man3/
+install -p -m 644 debian/c*.8 $RPM_BUILD_ROOT/%{_mandir}/man8/
 
 %find_lang %{name}
 
@@ -208,11 +220,13 @@ EOF
 %dir %{_datadir}/cracklib
 %{_datadir}/cracklib/cracklib.magic
 %{_sbindir}/*cracklib*
+%{_mandir}/man8/*
 
 %files devel
 %defattr(-,root,root)
 %{_includedir}/*
 %{_libdir}/libcrack.so
+%{_mandir}/man3/*
 
 %files dicts
 %defattr(-,root,root)
@@ -229,6 +243,14 @@ EOF
 %{_libdir}/../lib/python*/site-packages/*.py*
 
 %changelog
+* Tue Feb  1 2011 Nalin Dahyabhai <nalin@redhat.com> - 2.8.16-4
+- build those updated translations
+- limit which man pages we pull in
+
+* Thu Jan 27 2011 Nalin Dahyabhai <nalin@redhat.com> - 2.8.16-3
+- pull in man pages from Debian (#583932)
+- update zh_CN translation (#627449)
+
 * Thu May 20 2010 Nalin Dahyabhai <nalin@redhat.com> - 2.8.16-2
 - pull in changes to the Hindi translation (#589188)
 
