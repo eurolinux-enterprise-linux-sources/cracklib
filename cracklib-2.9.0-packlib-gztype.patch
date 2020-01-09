@@ -1,0 +1,24 @@
+diff -up cracklib-2.9.0/lib/packer.h.gztype cracklib-2.9.0/lib/packer.h
+--- cracklib-2.9.0/lib/packer.h.gztype	2013-08-21 11:48:47.341631450 +0200
++++ cracklib-2.9.0/lib/packer.h		2013-08-21 11:47:52.948471397 +0200
+@@ -44,7 +44,7 @@ struct pi_header
+ typedef struct
+ {
+     FILE *ifp;
+-    FILE *dfp;
++    void *dfp;
+     FILE *wfp;
+ 
+     uint32_t flags;
+diff -up cracklib-2.9.0/lib/packlib.c.gztype cracklib-2.9.0/lib/packlib.c
+--- cracklib-2.9.0/lib/packlib.c.gztype	2013-08-21 11:27:12.000000000 +0200
++++ cracklib-2.9.0/lib/packlib.c	2013-08-21 11:49:32.787600685 +0200
+@@ -72,7 +72,7 @@ PWOpen(prefix, mode)
+     char iname[STRINGSIZE];
+     char dname[STRINGSIZE];
+     char wname[STRINGSIZE];
+-    FILE *dfp;
++    void *dfp;
+     FILE *ifp;
+     FILE *wfp;
+ 
